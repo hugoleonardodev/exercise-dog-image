@@ -1,15 +1,17 @@
 import React from "react";
+// import { useAlert } from "react-alert";
 const fetch = require("node-fetch");
 
 const RANDOM_DOG_API = "https://dog.ceo/api/breeds/image/random";
 
 class RandomDogApi extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       message: undefined,
       status: "Loading...",
       isLoaded: false,
+      isTerrier: false,
     };
   }
 
@@ -17,18 +19,31 @@ class RandomDogApi extends React.Component {
     await fetch(RANDOM_DOG_API)
       .then((response) => response.json())
       .then((data) => {
-        this.setState({
-          message: data.message,
-          status: data.status,
-          isLoaded: true,
-        });
+        data.message.includes("terrier")
+          ? this.setState({
+              message: undefined,
+              status: "Loading...",
+              isLoaded: false,
+              isTerrier: true,
+            })
+          : this.setState({
+              message: data.message,
+              status: data.status,
+              isLoaded: true,
+              isTerrier: false,
+            });
       });
   }
 
   componentDidMount() {
     this.fetchRandomDogAPI();
+    // const alert = useAlert();
+    // alert(`This dog is a ${this.state.message.match(/\w+/g)[5]}`);
   }
 
+  componentDidUpdate() {
+    localStorage.setItem("randomDogUrl", this.state.message);
+  }
   renderLoading() {
     return <p>Loading</p>;
   }
@@ -46,15 +61,15 @@ class RandomDogApi extends React.Component {
     return (
       <div>
         <div id="random-dog-image">
-          {this.state.message ? (
+          {this.state.isTerrier || !this.state.message ? (
+            this.renderLoading()
+          ) : (
             <img
               src={this.state.message}
               alt="Random Dog Api"
               width="300px"
               height="300px"
             />
-          ) : (
-            this.renderLoading()
           )}
           <button id="new-random-dog" onClick={() => this.handleCick()}>
             New Dog
