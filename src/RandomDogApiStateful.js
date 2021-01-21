@@ -2,6 +2,7 @@ import React from "react";
 const fetch = require("node-fetch");
 
 const RANDOM_DOG_API = "https://dog.ceo/api/breeds/image/random";
+
 class RandomDogApi extends React.Component {
   constructor() {
     super();
