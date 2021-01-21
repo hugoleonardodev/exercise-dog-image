@@ -1,5 +1,6 @@
 import React from "react";
-// import { useAlert } from "react-alert";
+// import { withAlert } from "react-alert";
+// import Alert from "./alert";
 const fetch = require("node-fetch");
 
 const RANDOM_DOG_API = "https://dog.ceo/api/breeds/image/random";
@@ -37,13 +38,15 @@ class RandomDogApi extends React.Component {
 
   componentDidMount() {
     this.fetchRandomDogAPI();
-    // const alert = useAlert();
-    // alert(`This dog is a ${this.state.message.match(/\w+/g)[5]}`);
   }
 
   componentDidUpdate() {
     localStorage.setItem("randomDogUrl", this.state.message);
+    this.state.message
+      ? alert(`Next dog is ${this.state.message.match(/\w+/g)[5]}!`)
+      : alert("Loading");
   }
+
   renderLoading() {
     return <p>Loading</p>;
   }
@@ -59,22 +62,20 @@ class RandomDogApi extends React.Component {
 
   render() {
     return (
-      <div>
-        <div id="random-dog-image">
-          {this.state.isTerrier || !this.state.message ? (
-            this.renderLoading()
-          ) : (
-            <img
-              src={this.state.message}
-              alt="Random Dog Api"
-              width="300px"
-              height="300px"
-            />
-          )}
-          <button id="new-random-dog" onClick={() => this.handleCick()}>
-            New Dog
-          </button>
-        </div>
+      <div id="random-dog-image">
+        {this.state.isTerrier || !this.state.message ? (
+          this.renderLoading()
+        ) : (
+          <img
+            src={this.state.message}
+            alt="Random Dog Api"
+            width="300px"
+            height="300px"
+          />
+        )}
+        <button id="new-random-dog" onClick={() => this.handleCick()}>
+          New Dog
+        </button>
       </div>
     );
   }
